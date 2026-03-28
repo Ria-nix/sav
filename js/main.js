@@ -1,133 +1,135 @@
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+import { 
+    generateArray, 
+    updateDelay, 
+    getArray, 
+    startSortingProcess, 
+    stopSortingProcess,
+    isSorting,
+    resetStopFlag,
+    stopSorting
+} from './utils/helpers.js';
+import { bubbleSort } from './sorting/bubbleSort.js';
+import { quickSort } from './sorting/quickSort.js';
+import { mergeSort } from './sorting/mergeSort.js';
 
-let array = [];
-let delay = 30;
-let width = 10;
+let actionBtn, generateBtn, algorithmSelect, speedSlider, speedValue, sortingStatus;
 
-// Генерация массива
-function generateArray() {
-  array = [];
-  for (let i = 0; i < 80; i++) {
-    array.push(Math.random() * 300 + 10);
-  }
-  drawArray();
-}
+document.addEventListener('DOMContentLoaded', () => {
+    actionBtn = document.getElementById('actionBtn');
+    generateBtn = document.getElementById('generateBtn');
+    algorithmSelect = document.getElementById('algorithm');
+    speedSlider = document.getElementById('speed');
+    speedValue = document.getElementById('speedValue');
+    sortingStatus = document.getElementById('sortingStatus');
+    
+    generateArray();
+    
+    speedSlider.addEventListener('input', (e) => {
+        const value = e.target.value;
+        speedValue.textContent = value;
+        updateDelay(Number(value));
+    });
+    
+    actionBtn.addEventListener('click', handleAction);
+    generateBtn.addEventListener('click', handleGenerate);
+    
+    updateStatus('ready');
+});
 
-// Отрисовка
-function drawArray(active = []) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  for (let i = 0; i < array.length; i++) {
-    ctx.fillStyle = active.includes(i) ? "red" : "lime";
-    ctx.fillRect(i * width, canvas.height - array[i], width - 1, array[i]);
-  }
-}
-
-// Задержка
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-// ======================
-// Bubble Sort
-// ======================
-async function bubbleSort() {
-  for (let i = 0; i < array.length; i++) {
-    for (let j = 0; j < array.length - i - 1; j++) {
-      drawArray([j, j + 1]);
-      await sleep(delay);
-
-      if (array[j] > array[j + 1]) {
-        [array[j], array[j + 1]] = [array[j + 1], array[j]];
-      }
-    }
-  }
-  drawArray();
-}
-
-// ======================
-// Quick Sort
-// ======================
-async function quickSort(start = 0, end = array.length - 1) {
-  if (start >= end) return;
-
-  let index = await partition(start, end);
-  await quickSort(start, index - 1);
-  await quickSort(index + 1, end);
-}
-
-async function partition(start, end) {
-  let pivot = array[end];
-  let i = start;
-
-  for (let j = start; j < end; j++) {
-    drawArray([j, end]);
-    await sleep(delay);
-
-    if (array[j] < pivot) {
-      [array[i], array[j]] = [array[j], array[i]];
-      i++;
-    }
-  }
-
-  [array[i], array[end]] = [array[end], array[i]];
-  return i;
-}
-
-// ======================
-// Merge Sort
-// ======================
-async function mergeSort(start = 0, end = array.length - 1) {
-  if (start >= end) return;
-
-  let mid = Math.floor((start + end) / 2);
-  await mergeSort(start, mid);
-  await mergeSort(mid + 1, end);
-  await merge(start, mid, end);
-}
-
-async function merge(start, mid, end) {
-  let left = array.slice(start, mid + 1);
-  let right = array.slice(mid + 1, end + 1);
-
-  let i = 0,
-    j = 0,
-    k = start;
-
-  while (i < left.length && j < right.length) {
-    drawArray([k]);
-    await sleep(delay);
-
-    if (left[i] < right[j]) {
-      array[k++] = left[i++];
+function updateButtonsState(isSortingActive) {
+    if (isSortingActive) {
+        actionBtn.textContent = 'Стоп';
+        actionBtn.classList.add('sorting');
+        generateBtn.disabled = true;
+        algorithmSelect.disabled = true;
+        
+        actionBtn.disabled = false;
     } else {
-      array[k++] = right[j++];
+        actionBtn.textContent = 'Сортировать';
+        actionBtn.classList.remove('sorting');
+        generateBtn.disabled = false;
+        algorithmSelect.disabled = false;
+        
+        actionBtn.disabled = false;
     }
-  }
-
-  while (i < left.length) {
-    array[k++] = left[i++];
-  }
-
-  while (j < right.length) {
-    array[k++] = right[j++];
-  }
 }
 
-// ======================
-// Управление
-// ======================
+function updateStatus(status, message = '') {
+    sortingStatus.className = 'status';
+    
+    switch(status) {
+        case 'sorting':
+            sortingStatus.textContent = message || 'Сортировка выполняется...';
+            sortingStatus.classList.add('sorting');
+            break;
+        case 'completed':
+            sortingStatus.textContent = message || 'Сортировка завершена!';
+            sortingStatus.classList.add('completed');
+            break;
+        case 'stopped':
+            sortingStatus.textContent = message || 'Сортировка остановлена';
+            sortingStatus.classList.add('stopped');
+            break;
+        default:
+            sortingStatus.textContent = 'Готов к работе';
+            sortingStatus.classList.add('completed');
+    }
+}
+
+function handleGenerate() {
+    if (isSorting()) {
+        updateStatus('sorting', 'Сначала остановите сортировку');
+        return;
+    }
+    
+    generateArray();
+    updateStatus('ready');
+}
+
+async function handleAction() {
+    if (isSorting()) {
+        stopSortingProcess();
+        updateStatus('stopped', 'Останавливаю сортировку...');
+        updateButtonsState(false);
+    } else {
+        await startSort();
+    }
+}
+
 async function startSort() {
-  let algo = document.getElementById("algorithm").value;
+    const algorithm = algorithmSelect.value;
+    const algorithmNames = {
+        'bubble': 'Пузырьковая сортировка',
+        'quick': 'Быстрая сортировка',
+        'merge': 'Сортировка слиянием'
+    };
+    
+    startSortingProcess();
+    updateButtonsState(true);
+    updateStatus('sorting', `Выполняется ${algorithmNames[algorithm]}...`);
+    
+    try {
+        if (algorithm === 'bubble') {
+            await bubbleSort();
+        } else if (algorithm === 'quick') {
+            await quickSort();
+        } else if (algorithm === 'merge') {
+            await mergeSort();
+        }
 
-  if (algo === "bubble") {
-    await bubbleSort();
-  } else if (algo === "quick") {
-    await quickSort();
-  } else if (algo === "merge") {
-    await mergeSort();
-  }
+        if (!stopSorting) {
+            updateStatus('completed', `${algorithmNames[algorithm]} успешно завершена!`);
+        }
+    } catch (error) {
+        if (error.message === 'Сортировка остановлена') {
+            updateStatus('stopped', `${algorithmNames[algorithm]} остановлена`);
+        } else {
+            console.error('Ошибка при сортировке:', error);
+            updateStatus('stopped', `Ошибка: ${error.message}`);
+        }
+    } finally {
+        stopSortingProcess();
+        updateButtonsState(false);
+        resetStopFlag();
+    }
 }
-
-generateArray();
