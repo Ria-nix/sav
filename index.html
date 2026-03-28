@@ -2,23 +2,39 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Визуализатор сортировки</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Визуализатор алгоритмов сортировки</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div class="container">
+        <h1>Визуализатор алгоритмов сортировки</h1>
+        
+        <div class="controls">
+            <select id="algorithm" class="control-element">
+                <option value="bubble">Пузырьковая сортировка</option>
+                <option value="quick">Быстрая сортировка</option>
+                <option value="merge">Сортировка слиянием</option>
+            </select>
+            
+            <button id="actionBtn" class="control-element btn-action">Сортировать</button>
+            <button id="generateBtn" class="control-element btn-generate">Новый массив</button>
+            
+            <div class="speed-control">
+                <label>Скорость: </label>
+                <input type="range" id="speed" min="1" max="100" value="30">
+                <span id="speedValue">30</span> мс
+            </div>
+        </div>
+        
+        <canvas id="canvas" width="800" height="400"></canvas>
+        
+        <div class="info">
+            <p>Активные элементы подсвечиваются <span style="color: #ff4444;">красным</span></p>
+            <p id="sortingStatus" class="status">Готов к работе</p>
+        </div>
+    </div>
 
-<h1>Визуализатор алгоритмов сортировки</h1>
-
-<select id="algorithm">
-    <option value="bubble">Bubble Sort</option>
-    <option value="quick">Quick Sort</option>
-    <option value="merge">Merge Sort</option>
-</select>
-
-<button onclick="startSort()">Старт</button>
-<button onclick="generateArray()">Новый массив</button>
-
-<canvas id="canvas" width="800" height="400"></canvas>
-<script src="./js/main.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
