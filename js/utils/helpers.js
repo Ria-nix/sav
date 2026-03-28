@@ -39,7 +39,6 @@ export async function sleep(ms) {
         
         intervalId = setInterval(() => {
             if (stopSorting) {
-                // Очищаем оба таймера
                 if (timeoutId) clearTimeout(timeoutId);
                 if (intervalId) clearInterval(intervalId);
                 reject(new Error('Сортировка остановлена'));

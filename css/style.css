@@ -6,7 +6,7 @@
 
 body {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background:#667eea;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -20,14 +20,16 @@ body {
     padding: 30px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     text-align: center;
-    max-width: 900px;
+    max-width: 1200px;
     width: 100%;
+    transition: all 0.3s ease;
 }
 
 h1 {
     color: #333;
     margin-bottom: 20px;
     font-size: 24px;
+    transition: font-size 0.3s ease;
 }
 
 .controls {
@@ -48,14 +50,15 @@ button {
     cursor: pointer;
     transition: all 0.3s;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 select {
+    background:  white;
     color: black;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: 1px solid #0b7dda;
+    background-position: right 12px center;
     padding-right: 35px;
-    background: white;
-    border: 2px solid #667eea;
 }
 
 select:hover:not(:disabled) {
@@ -123,6 +126,7 @@ select:disabled {
 .speed-control label {
     font-weight: 500;
     color: #333;
+    white-space: nowrap;
 }
 
 .speed-control input[type="range"] {
@@ -188,19 +192,17 @@ canvas {
     border: 2px solid #ddd;
     border-radius: 8px;
     background: #f7f7f7;
-    margin: 20px 0 5px;
+    margin: 20px 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 .info {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
     color: #666;
     font-size: 14px;
     margin-top: 10px;
-    width: max-content;
-    margin: 0 auto;
 }
 
 .status {
@@ -240,5 +242,182 @@ canvas {
     100% {
         transform: scale(1);
         box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    .controls {
+        gap: 8px;
+    }
+
+    select,
+    button {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    .btn-action {
+        min-width: 110px;
+    }
+
+    .speed-control {
+        padding: 5px 10px;
+        gap: 8px;
+    }
+
+    .speed-control label {
+        font-size: 12px;
+    }
+
+    .speed-control input[type="range"] {
+        width: 100px;
+    }
+
+    #speedValue {
+        font-size: 12px;
+        padding: 2px 6px;
+        min-width: 30px;
+    }
+
+    .status {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .info {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 18px;
+    }
+
+    .controls {
+        gap: 6px;
+    }
+
+    select,
+    button {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    select {
+        padding-right: 28px;
+        background-size: 12px;
+    }
+
+    .btn-action {
+        min-width: 90px;
+    }
+
+    .speed-control {
+        width: 100%;
+        justify-content: center;
+        margin-top: 5px;
+    }
+
+    .speed-control input[type="range"] {
+        width: 120px;
+    }
+
+    canvas {
+        margin: 15px 0;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+
+    .container {
+        padding: 12px;
+    }
+
+    h1 {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .controls {
+        gap: 5px;
+    }
+
+    select,
+    button {
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+
+    .btn-action {
+        min-width: 80px;
+    }
+
+    .speed-control {
+        padding: 4px 8px;
+    }
+
+    .speed-control label {
+        font-size: 10px;
+    }
+
+    .speed-control input[type="range"] {
+        width: 90px;
+    }
+
+    #speedValue {
+        font-size: 10px;
+        padding: 2px 4px;
+        min-width: 25px;
+    }
+
+    .status {
+        font-size: 11px;
+        padding: 4px 10px;
+    }
+
+    .info {
+        font-size: 10px;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    select,
+    button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .speed-control {
+        width: auto;
+    }
+
+    .btn-action {
+        min-width: auto;
     }
 }
