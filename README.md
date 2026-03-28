@@ -1,1 +1,1 @@
-# sav
+# Sorting Algorithm Visualizer (SAV) - Визуализатор алгоритмов сортировки (ВАС)
