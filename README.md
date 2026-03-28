@@ -1,4 +1,4 @@
-#  Визуализатор алгоритмов сортировки (Sorting Algorithm Visualizer) 
+#  Визуализация алгоритмов сортировки (Sorting Algorithm Visualizer) 
 
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
